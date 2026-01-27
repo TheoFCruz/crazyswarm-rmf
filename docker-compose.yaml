@@ -1,0 +1,14 @@
+services:
+  crazyswarm-rmf:
+    build: 
+      context: ./
+      target: crazyswarm-rmf
+    container_name: crazyswarm-rmf
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./workdir:/workdir
+    devices:
+      - /dev/input:/dev/input
+    network_mode: "host"
