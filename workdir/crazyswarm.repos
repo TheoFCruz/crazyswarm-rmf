@@ -1,0 +1,10 @@
+repositories:
+  cswarm_ws/src/crazyswarm2:
+    type: git
+    url: https://github.com/IMRCLab/crazyswarm2
+    version: main
+  crazyflie-firmware:
+    type: git
+    url: https://github.com/bitcraze/crazyflie-firmware.git
+    version: 2025.02
+
