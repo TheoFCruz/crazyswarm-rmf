@@ -24,6 +24,7 @@ RUN apt-get install -y \
 FROM ros2-base AS crazyswarm-rmf
 RUN apt-get update && apt-get install -y \
     libboost-program-options-dev \
+    swig \
     libusb-1.0-0-dev
 RUN apt-get install -y \
     ros-${ROS_DISTRO}-tf-transformations \
@@ -34,8 +35,8 @@ RUN apt-get install -y \
 WORKDIR /root
 
 # setup pythonvenv and install dependencies
-RUN python3 -m venv .ros_venv
-RUN .ros_venv/bin/pip3 install rowan nicegui==1.4.2 cflib transforms3d
+RUN python3 -m venv .ros_venv && \
+   .ros_venv/bin/pip3 install rowan nicegui==1.4.2 cflib transforms3d
 
 # add source to bashrc
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
@@ -43,9 +44,16 @@ RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
 # create script to install and setup crazyswarm2, crazyflie-firmware and rmf
 COPY rmf.repos /root
 COPY crazyswarm.repos /root
-RUN mkdir -p /root/rmf_ws/src/
-RUN vcs import /root < crazyswarm.repos
-RUN vcs import /root/rmf_ws/src < rmf.repos
+RUN mkdir -p /root/rmf_ws/src/ && \
+    vcs import /root < crazyswarm.repos && \
+    vcs import /root/rmf_ws/src < rmf.repos
+RUN git -C /root/crazyflie-firmware submodule update --init --recursive
+
+
+# build firmware python bindings
+RUN make -C /root/crazyflie-firmware cf2_defconfig && \
+    make -C /root/crazyflie-firmware bindings_python && \
+    .ros_venv/bin/pip3 install -e /root/crazyflie-firmware/build
 
 # colored prompt
 RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /root/.bashrc
