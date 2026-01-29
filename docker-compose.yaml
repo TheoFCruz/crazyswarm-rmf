@@ -8,7 +8,9 @@ services:
       - DISPLAY=${DISPLAY}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ./workdir:/workdir
+      - ./crazyflie-firmware:/root/crazyflie-firmware
+      - ./cswarm_ws:/root/cswarm_ws
+      - ./rmf_ws:/root/rmf_ws
     devices:
       - /dev/input:/dev/input
     network_mode: "host"
