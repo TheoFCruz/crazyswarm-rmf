@@ -33,27 +33,35 @@ RUN apt-get install -y \
     python3-venv
 
 WORKDIR /root
+SHELL ["/bin/bash", "-c"]
 
 # setup pythonvenv and install dependencies
-RUN python3 -m venv .ros_venv && \
-   .ros_venv/bin/pip3 install rowan nicegui==1.4.2 cflib transforms3d
+RUN python3 -m venv /root/.ros_venv && \
+   .ros_venv/bin/pip3 install \
+   rowan \
+   nicegui==1.4.2 \
+   cflib \
+   transforms3d \
+   empy<4 \
+   catkin_package \
+   lark-parser
 
 # add source to bashrc
-RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
+RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc && \
+    echo "source /root/.ros_venv/bin/activate" >> /root/.bashrc
 
 # create script to install and setup crazyswarm2, crazyflie-firmware and rmf
 COPY rmf.repos /root
 COPY crazyswarm.repos /root
-RUN mkdir -p /root/rmf_ws/src/ && \
-    vcs import /root < crazyswarm.repos && \
-    vcs import /root/rmf_ws/src < rmf.repos
-RUN git -C /root/crazyflie-firmware submodule update --init --recursive
-
+COPY setup.sh /root
+RUN mkdir -p /root/rmf_ws/src/ 
 
 # build firmware python bindings
+RUN git clone https://github.com/bitcraze/crazyflie-firmware.git && \
+    git -C /root/crazyflie-firmware submodule update --init --recursive
 RUN make -C /root/crazyflie-firmware cf2_defconfig && \
     make -C /root/crazyflie-firmware bindings_python && \
-    .ros_venv/bin/pip3 install -e /root/crazyflie-firmware/build
+    /root/.ros_venv/bin/pip3 install -e /root/crazyflie-firmware/build
 
 # colored prompt
 RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /root/.bashrc

@@ -13,4 +13,5 @@ services:
       - ./rmf_ws:/root/rmf_ws
     devices:
       - /dev/input:/dev/input
+      - /dev/dri:/dev/dri
     network_mode: "host"
