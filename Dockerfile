@@ -25,6 +25,11 @@ FROM ros2-base AS crazyswarm-rmf
 RUN apt-get update && apt-get install -y \
     libboost-program-options-dev \
     swig \
+    clang \
+    clang-tools \
+    lldb \
+    lld \
+    libstdc++-12-dev \
     libusb-1.0-0-dev
 RUN apt-get install -y \
     ros-${ROS_DISTRO}-tf-transformations \
@@ -42,8 +47,8 @@ RUN python3 -m venv /root/.ros_venv && \
    nicegui==1.4.2 \
    cflib \
    transforms3d \
-   empy<4 \
-   catkin_package \
+   'empy<4' \
+   catkin_pkg \
    lark-parser
 
 # add source to bashrc
