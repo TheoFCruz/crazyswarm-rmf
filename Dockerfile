@@ -43,9 +43,11 @@ RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
 # create script to install and setup crazyswarm2, crazyflie-firmware and rmf
 COPY rmf.repos /root
 COPY crazyswarm.repos /root
-
 RUN mkdir -p /root/rmf_ws/src/
 RUN vcs import /root < crazyswarm.repos
 RUN vcs import /root/rmf_ws/src < rmf.repos
+
+# colored prompt
+RUN sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/' /root/.bashrc
 
 CMD tail -f /dev/null
