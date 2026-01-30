@@ -1,5 +1,5 @@
 # ROS2 desktop full base image with additional linux utils
-FROM osrf/ros:jazzy-desktop AS ros2-base
+FROM osrf/ros:jazzy-desktop-full AS ros2-base
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 RUN apt-get install -y \
