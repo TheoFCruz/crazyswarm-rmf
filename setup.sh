@@ -32,6 +32,8 @@ rosdep install -y \
   --ignore-src \
   --rosdistro $ROS_DISTRO 
 
+source /opt/ros/jazzy/setup.bash
+
 export CXX=clang++
 export CC=clang
 colcon build --mixin release lld

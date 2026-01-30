@@ -62,8 +62,9 @@ COPY setup.sh /root
 RUN mkdir -p /root/rmf_ws/src/ 
 
 # build firmware python bindings
-RUN git clone https://github.com/bitcraze/crazyflie-firmware.git && \
-    git -C /root/crazyflie-firmware submodule update --init --recursive
+RUN git clone \
+    --branch 2025.02 --single-branch --recursive \
+    https://github.com/bitcraze/crazyflie-firmware.git 
 RUN make -C /root/crazyflie-firmware cf2_defconfig && \
     make -C /root/crazyflie-firmware bindings_python && \
     /root/.ros_venv/bin/pip3 install -e /root/crazyflie-firmware/build
